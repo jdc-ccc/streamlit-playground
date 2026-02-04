@@ -4,13 +4,15 @@ import matplotlib.pyplot as plt
 import math
 from streamlit_ace import st_ace
 
+
+
 import pandas as pd
 from pathlib import Path
 
 import re
 
 from utils.py2latex import extract_return_expression, python_to_latex
-
+from utils.js_renderer import render_copy_bubbles
 
 default_x_code = """# Define the domain array x (1D)
 x = np.linspace(-5, 5, 400)
@@ -75,16 +77,9 @@ with left:
         csv_cols = st.session_state["_csv_cols"]
         upload_var = st.session_state["_upload_var"]
 
-    # --- Show column header "bubbles" when a CSV is present ---
+
     if csv_df is not None and csv_cols:
-        st.markdown("**CSV Columns:**", help="Click-to-copy not wired; these are just visual labels.")
-        badges = " ".join(
-            [f"<span style='display:inline-block; padding:4px 10px; margin:2px; "
-            f"background:#eef2ff; color:#1f3a8a; border:1px solid #c7d2fe; border-radius:999px; "
-            f"font-size:12px; font-family:ui-sans-serif,system-ui;'>"
-            f"{c}</span>" for c in csv_cols]
-        )
-        st.markdown(badges, unsafe_allow_html=True)
+        render_copy_bubbles(csv_cols, upload_var, include_values=True, title="CSV Columns (click to copy)")
 
     
     if csv_df is not None and csv_cols:
