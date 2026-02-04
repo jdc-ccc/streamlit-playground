@@ -47,7 +47,7 @@ with left:
     user_x_code = st_ace(
         value=st.session_state.last_good_x_code,
         language="python",
-        theme="tomorrow_night_bright",
+        theme="solarized_light",
         keybinding="vscode",
         show_gutter=True,
         show_print_margin=False,
@@ -64,7 +64,7 @@ with left:
     user_g_code = st_ace(
         value=st.session_state.last_good_g_code,
         language="python",
-        theme="tomorrow_night_bright",
+        theme="solarized_light",
         keybinding="vscode",
         show_gutter=True,
         show_print_margin=False,
@@ -121,14 +121,16 @@ except Exception as e:
 
 # --- Evaluate g(x) code next ---
 try:
-    safe_globals_g = {"np": np, "math": math, "__builtins__": {}}
-    local_env_g = {}
-    exec(user_g_code, safe_globals_g, local_env_g)
 
-    if "g" not in local_env_g or not callable(local_env_g["g"]):
+    env_g = {"np": np, "math": math, "__builtins__": {}}
+    exec(user_g_code, env_g)    
+    candidate_g = env_g["g"]    
+
+
+    if "g" not in env_g or not callable(env_g["g"]):
         raise ValueError("No function named g(x) was defined.")
 
-    candidate_g = local_env_g["g"]
+    candidate_g = env_g["g"]
 
     # Test on current x
     y_test = candidate_g(x)
