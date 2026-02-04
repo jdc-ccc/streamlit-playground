@@ -1,6 +1,6 @@
 from streamlit.components.v1 import html
 
-def render_copy_bubbles(cols, upload_var, title="CSV Columns"):
+def render_copy_bubbles(cols, upload_var):
     """
     Render clickable 'chips' for each column that copy a snippet to clipboard:
     <upload_var>['<col>'](.values)
@@ -29,7 +29,6 @@ def render_copy_bubbles(cols, upload_var, title="CSV Columns"):
 
     html_content = f"""
     <div class="chips-wrap">
-      <div class="chips-title">{title}</div>
       {''.join(chips)}
     </div>
     <style>

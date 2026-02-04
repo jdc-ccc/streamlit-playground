@@ -79,7 +79,8 @@ with left:
 
 
     if csv_df is not None and csv_cols:
-        render_copy_bubbles(csv_cols, upload_var, title="CSV Columns (click to copy)")
+        st.markdown("Click to copy")
+        render_copy_bubbles(csv_cols, upload_var)
 
     
     if csv_df is not None and csv_cols:
@@ -231,3 +232,44 @@ with right:
         st.error(f"[x] {error_x_message}")
     if error_g_message:
         st.error(f"[g(x)] {error_g_message}")
+
+
+        
+
+    # --- Build exportable DataFrame ---
+    try:
+        if isinstance(x, pd.DataFrame):
+            df_out = x.copy()
+            df_out["g(x)"] = y
+        else:
+            df_out = pd.DataFrame({"x": x, "g(x)": y})
+    except Exception as e:
+        st.error(f"Could not prepare CSV output: {e}")
+        df_out = None
+
+
+
+    if df_out is not None:
+        st.markdown("### Select columns to include in export")
+
+        all_cols = list(df_out.columns)
+
+        selected_cols = st.multiselect(
+            "Columns:",
+            options=all_cols,
+            default=all_cols,  
+        )
+
+        # Apply selection
+        df_export = df_out[selected_cols]
+
+
+
+        csv_bytes = df_export.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            label="Download selected data as CSV",
+            data=csv_bytes,
+            file_name="processed_data.csv",
+            mime="text/csv",
+        )
