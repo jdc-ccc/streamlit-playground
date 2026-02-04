@@ -1,3 +1,5 @@
+import re
+
 
 def python_to_latex(expr: str) -> str:
     expr = expr.strip()
@@ -59,5 +61,3 @@ def extract_return_expression(code_text):
         if line.startswith("return "):
             return line[len("return "):]
     return None
-
-st.latex(r"y = g(x)")
