@@ -241,6 +241,10 @@ with right:
         if isinstance(x, pd.DataFrame):
             df_out = x.copy()
             df_out["g(x)"] = y
+        elif csv_df is not None:
+            csv_df['x'] = x
+            csv_df['g(x)'] = y
+            df_out = csv_df
         else:
             df_out = pd.DataFrame({"x": x, "g(x)": y})
     except Exception as e:
@@ -252,7 +256,9 @@ with right:
     if df_out is not None:
         st.markdown("### Select columns to include in export")
 
-        all_cols = list(df_out.columns)
+        out_cols = list(df_out.columns)
+
+        all_cols = list(dict.fromkeys(csv_cols + out_cols))
 
         selected_cols = st.multiselect(
             "Columns:",
