@@ -79,7 +79,7 @@ with left:
 
 
     if csv_df is not None and csv_cols:
-        render_copy_bubbles(csv_cols, upload_var, include_values=True, title="CSV Columns (click to copy)")
+        render_copy_bubbles(csv_cols, upload_var, title="CSV Columns (click to copy)")
 
     
     if csv_df is not None and csv_cols:
