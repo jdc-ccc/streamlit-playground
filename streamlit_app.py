@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from streamlit_ace import st_ace
+
+import pandas as pd
+from pathlib import Path
+
 import re
 
 from utils.py2latex import extract_return_expression, python_to_latex
@@ -43,6 +47,51 @@ if "last_good_g_code" not in st.session_state:
 left, right = st.columns([0.55, 0.45])
 
 with left:
+
+   # --- CSV upload  ---
+    uploaded = st.file_uploader("Upload CSV (optional)", type=["csv"], key="csv_uploader")
+
+    csv_df = None
+    csv_cols = []
+    upload_var = None  # name to expose the DataFrame in the editor's namespace
+
+    if uploaded is not None:
+        try:
+            csv_df = pd.read_csv(uploaded)
+            csv_cols = list(csv_df.columns)
+            upload_var = Path(uploaded.name).stem  # e.g. "mydata" from "mydata.csv"
+
+            # Store so we keep it if reruns happen
+            st.session_state["_csv_df"] = csv_df
+            st.session_state["_csv_cols"] = csv_cols
+            st.session_state["_upload_var"] = upload_var
+
+        except Exception as e:
+            st.error(f"CSV error: {e}")
+
+    # In case of reruns without a new upload, restore
+    if uploaded is None and "_csv_df" in st.session_state:
+        csv_df = st.session_state["_csv_df"]
+        csv_cols = st.session_state["_csv_cols"]
+        upload_var = st.session_state["_upload_var"]
+
+    # --- Show column header "bubbles" when a CSV is present ---
+    if csv_df is not None and csv_cols:
+        st.markdown("**CSV Columns:**", help="Click-to-copy not wired; these are just visual labels.")
+        badges = " ".join(
+            [f"<span style='display:inline-block; padding:4px 10px; margin:2px; "
+            f"background:#eef2ff; color:#1f3a8a; border:1px solid #c7d2fe; border-radius:999px; "
+            f"font-size:12px; font-family:ui-sans-serif,system-ui;'>"
+            f"{c}</span>" for c in csv_cols]
+        )
+        st.markdown(badges, unsafe_allow_html=True)
+
+    
+    if csv_df is not None and csv_cols:
+        first_col = csv_cols[0]
+        st.session_state.last_good_x_code = f"x = {upload_var}['{first_col}'].values"
+
+
     st.markdown("### Define the domain `x`")
     user_x_code = st_ace(
         value=st.session_state.last_good_x_code,
@@ -89,37 +138,32 @@ if not user_x_code:
 if not user_g_code:
     user_g_code = st.session_state.last_good_g_code
 
-# --- Evaluate x code first ---
+
+# --- Evaluate x code ---
 try:
-    safe_globals_x = {"np": np, "math": math, "__builtins__": {}}
+    safe_globals_x = {"np": np, "math": math, "pd": pd, "__builtins__": {}}
     local_env_x = {}
+
+    # If a CSV is present, inject it so user can refer to it by <upload_var>
+    if csv_df is not None and upload_var:
+        safe_globals_x[upload_var] = csv_df  # e.g. mydata = <DataFrame>
+        safe_globals_x["df"] = csv_df        # optional convenience alias
+
     exec(user_x_code, safe_globals_x, local_env_x)
 
     if "x" not in local_env_x:
         raise ValueError("No variable named x was defined.")
-
-    x_candidate = np.asarray(local_env_x["x"])
-    # Flatten to 1D for plotting
-    x_candidate = np.ravel(x_candidate)
-
-    if x_candidate.size == 0:
-        raise ValueError("x is empty. Please provide at least one point.")
-
-    # Basic numeric check
-    if not np.issubdtype(x_candidate.dtype, np.number):
-        raise ValueError("x must be numeric (int/float).")
-
-    # Commit x
+ 
+    x_candidate = local_env_x["x"]
+    x = x_candidate
     st.session_state.x_arr = x_candidate
     st.session_state.last_good_x_code = user_x_code
-    x = x_candidate
 
 except Exception as e:
     error_x_message = str(e)
-    # Fallback to last good x
     x = st.session_state.x_arr
 
-# --- Evaluate g(x) code next ---
+# --- Evaluate g(x) code ---
 try:
 
     env_g = {"np": np, "math": math, "__builtins__": {}}
