@@ -35,90 +35,14 @@ st.set_page_config(
 )
 
 # ----------------------------------------------------------------------------- 
-# DARK MODE BRAND CSS — full-width, no boxes
-# (plum = #29004A, purple = #7142FF, amber = #FFAC00 per styleguide)
+#load CSS
 # -----------------------------------------------------------------------------
-st.markdown("""
-<style>
-    /* Remove Streamlit page gutters and width constraints */
-    .main, .block-container {
-        padding-top: 0 !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin: 0 !important;
-        max-width: 100% !important;
-    }
 
-    /* Global dark plum background & default text */
-    body, .main, .block-container {
-        background-color: #29004A !important;  /* plum */
-        color: #FFFFFF !important;
-        font-family: "Century Gothic", sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
+def load_css():
+    with open("style.css", "r") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-    /* Headings — brand purple */
-    h1, h2, h3, h4, h5, h6 {
-        color: #7142FF !important;  /* purple */
-        font-family: "Century Gothic", sans-serif;
-        font-weight: 700 !important;
-        letter-spacing: 0.01em;
-    }
-
-    /* Links — amber with thick underline on hover for accessibility */
-    a { color: #FFAC00 !important; text-decoration: none; }
-    a:hover { text-decoration: underline; text-decoration-thickness: 3px; }
-
-    /* Buttons — readable by default */
-    .stDownloadButton button, .stButton button {
-        background-color: #7142FF !important;  /* purple */
-        color: #FFFFFF !important;             /* white text */
-        border-radius: 4px !important;
-        border: 1px solid #7142FF !important;
-        padding: 0.5rem 1.25rem !important;
-    }
-    .stDownloadButton button:hover, .stButton button:hover {
-        background-color: #FFAC00 !important;  /* amber */
-        color: #29004A !important;             /* plum text for contrast */
-        border-color: #FFAC00 !important;
-    }
-
-    /* Inputs / widgets — transparent to show the plum BG */
-    .stMarkdown, .stPlotlyChart, .stDataFrame, .stFileUploader,
-    .stTextInput, .stSelectbox, .stMultiSelect, .stDownloadButton,
-    .stNumberInput, .stTextArea, .element-container {
-        background: transparent !important;
-        color: #FFFFFF !important;
-    }
-
-    /* ACE editor — dark surface */
-    .ace_editor {
-        background: #1A002D !important;
-        color: #FFFFFF !important;
-        border-radius: 4px !important;
-    }
-
-    /* Masthead / Header strip */
-    .cc-header {
-        width: 100%;
-        background: #7142FF;                 /* purple */
-        border-bottom: 4px solid #FFAC00;    /* amber rule */
-        padding: 0.75rem 1.25rem;
-        display: flex; align-items: center; gap: 1rem;
-        color: #FFFFFF !important;
-        position: sticky; top: 0; z-index: 9999;
-    }
-    .cc-header img { height: 40px; width: auto; }
-
-    /* Remove legacy card-like backgrounds */
-    .css-1r6slb0, .css-1d391kg { background: transparent !important; box-shadow: none !important; border: none !important; }
-
-    /* Selection & focus states for accessibility */
-    ::selection { background: #29004A; color: #FFFFFF; } /* plum selection */
-    *:focus-visible { outline: 3px solid #FFAC00; outline-offset: 2px; } /* amber */
-</style>
-""", unsafe_allow_html=True)
+load_css()
 
 # ----------------------------------------------------------------------------- 
 # Header with logo (single masthead)
