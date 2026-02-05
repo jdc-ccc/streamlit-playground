@@ -51,3 +51,4 @@ def render_copy_bubbles(cols, upload_var):
     </style>
     """
     html(html_content, height=80)  # bump height if you have many columns
+

@@ -8,11 +8,16 @@
     max-width: 100% !important;
 }
 
-/* Add outer page border for padding*/
-body {
-    margin: 20px !important;      
+
+/* Page padding/border effect */
+
+.stApp {
+    padding: 25px !important;
+    padding-top: 60px !important;
+    border: 20px solid #29004A !important; 
     background-color: #29004A !important;
 }
+
 
 /* Global dark plum background & default text */
 body, .main, .block-container {
@@ -62,9 +67,10 @@ a:hover { text-decoration: underline; text-decoration-thickness: 3px; }
 /* ACE editor surface */
 .ace_editor {
     background: #1A002D !important;
-    color: #FFFFFF !important;
-    border-radius: 4px !important;
+    color: #7142FF !important;
 }
+
+
 
 /* Masthead  */
 .cc-header {
@@ -72,6 +78,7 @@ a:hover { text-decoration: underline; text-decoration-thickness: 3px; }
     background: #7142FF;
     border-bottom: 4px solid #FFAC00;
     padding: 0.75rem 1.25rem;
+    margin-top: 80px !important;
     display: flex;
     align-items: center;
     gap: 1rem;

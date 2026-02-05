@@ -29,7 +29,7 @@ def g(x):
 # Page config
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="g(x) Explorer",
+    page_title="Sample Model Environment",
     layout="wide",
     page_icon="📈",
 )
@@ -48,18 +48,17 @@ load_css()
 # Header with logo (single masthead)
 # -----------------------------------------------------------------------------
 def header_with_logo():
-    try:
-        with open("site-logo.png", "rb") as f:
-            encoded = base64.b64encode(f.read()).decode()
-        logo_html = f'<img src="data:image/png;base64,{encoded}" alt="Site logo" />'
-    except Exception:
-        logo_html = '<strong>g(x) Explorer</strong>'
+
+    with open("site-logo.png", "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+    logo_html = f'<img src="data:image/png;base64,{encoded}" alt="The CCC logo" />'
+
 
     st.markdown(
         f"""
         <div class="cc-header">
             {logo_html}
-            <span style="font-size:1.4rem;font-weight:700;">g(x) Explorer</span>
+            <span style="font-size:1.4rem;font-weight:700;">Sample Model Environment</span>
         </div>
         """,
         unsafe_allow_html=True,
@@ -87,7 +86,7 @@ left, right = st.columns([0.55, 0.45])
 
 with left:
     st.markdown("### Define your data")
-    uploaded = st.file_uploader("Upload CSV (optional)", type=["csv"], key="csv_uploader")
+    uploaded = st.file_uploader("You can upload a .csv data file here", type=["csv"], key="csv_uploader")
 
     csv_df, csv_cols, upload_var = None, [], None
 
@@ -109,7 +108,7 @@ with left:
         upload_var = st.session_state["_upload_var"]
 
     if csv_df is not None and csv_cols:
-        st.markdown("Click to copy column names into the editor below:")
+        st.markdown("Columns in uploaded file")
         render_copy_bubbles(csv_cols, upload_var)
         # Auto-set x to first column
         st.session_state.last_good_x_code = f"x = {upload_var}['{csv_cols[0]}'].values"
@@ -119,7 +118,7 @@ with left:
     user_x_code = st_ace(
         value=st.session_state.last_good_x_code,
         language="python",
-        theme="monokai",                 # dark theme
+        theme="solarized_light",             
         keybinding="vscode",
         show_gutter=True,
         show_print_margin=False,
@@ -136,7 +135,7 @@ with left:
     user_g_code = st_ace(
         value=st.session_state.last_good_g_code,
         language="python",
-        theme="monokai",                 # dark theme
+        theme="solarized_light",        
         keybinding="vscode",
         show_gutter=True,
         show_print_margin=False,
@@ -148,6 +147,7 @@ with left:
         auto_update=True,
         key="ace-editor-g",
     )
+    round_all_ace_editors(radius_px=10)
 
 # ----------------------------------------------------------------------------- 
 # Evaluation / validation (original logic)
