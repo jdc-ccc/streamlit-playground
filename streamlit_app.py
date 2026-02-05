@@ -147,7 +147,6 @@ with left:
         auto_update=True,
         key="ace-editor-g",
     )
-    round_all_ace_editors(radius_px=10)
 
 # ----------------------------------------------------------------------------- 
 # Evaluation / validation (original logic)
